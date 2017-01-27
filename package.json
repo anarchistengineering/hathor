@@ -1,0 +1,28 @@
+{
+  "name": "hathor",
+  "version": "0.0.1",
+  "description": "Hathor is a wrapper over the top of Hapi that includes all the boilerplate code and features out of the box.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index",
+    "test": "lab",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "async": "^2.1.4",
+    "glob": "^7.1.1",
+    "hapi": "^16.1.0",
+    "hathor-config": "0.0.1",
+    "hathor-file-config": "0.0.1",
+    "hathor-utils": "0.0.1",
+    "inert": "^4.1.0",
+    "json-stringify-safe": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0",
+    "code": "^4.0.0",
+    "lab": "^11.2.2"
+  },
+  "author": "Jeremy Darling <jeremy.darling@gmail.com>",
+  "license": "ISC"
+}
