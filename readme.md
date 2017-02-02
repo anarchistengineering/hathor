@@ -178,3 +178,14 @@ Server(options)
   }
 }
 ```
+
+Core Plugins
+===
+
+  * [Logger](https://github.com/anarchistengineering/hathor-logger)
+  * [Utilities](https://github.com/anarchistengineering/hathor-utils)
+  * [Base Configuration Provider](https://github.com/anarchistengineering/hathor-config)
+  * [File Configuration Provider](https://github.com/anarchistengineering/hathor-file-config)
+  * [Basic Auth](https://github.com/anarchistengineering/hathor-basic-auth)
+  * [Cookie Auth](https://github.com/anarchistengineering/hathor-cookie-auth)
+  * [JWT Auth](https://github.com/anarchistengineering/hathor-jwt-auth)
