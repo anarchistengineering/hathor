@@ -182,10 +182,10 @@ Server(options)
 Core Plugins
 ===
 
-  * [Logger](https://github.com/anarchistengineering/hathor-logger)
-  * [Utilities](https://github.com/anarchistengineering/hathor-utils)
-  * [Base Configuration Provider](https://github.com/anarchistengineering/hathor-config)
-  * [File Configuration Provider](https://github.com/anarchistengineering/hathor-file-config)
-  * [Basic Auth](https://github.com/anarchistengineering/hathor-basic-auth)
-  * [Cookie Auth](https://github.com/anarchistengineering/hathor-cookie-auth)
-  * [JWT Auth](https://github.com/anarchistengineering/hathor-jwt-auth)
+  * [Logger](https://github.com/anarchistengineering/hathor-logger) - Default logger for Hathor
+  * [Utilities](https://github.com/anarchistengineering/hathor-utils) - Utility library providing some generic methods for common tasks.
+  * [Base Configuration Provider](https://github.com/anarchistengineering/hathor-config) - Configuration Provider for Hathor.  Generally this will be combined with other providers and not used in a standalone manor.
+  * [File Configuration Provider](https://github.com/anarchistengineering/hathor-file-config) - Provides configuration values from a JSON file.
+  * [Basic Auth](https://github.com/anarchistengineering/hathor-basic-auth) - Provides Basic Authentication to a Hathor application.
+  * [Cookie Auth](https://github.com/anarchistengineering/hathor-cookie-auth) - Provides Cookie Authentication to a Hathor application.
+  * [JWT Auth](https://github.com/anarchistengineering/hathor-jwt-auth) - Provides JSON Web Token Authentication to a Hathor application.
