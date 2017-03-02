@@ -111,7 +111,7 @@ class Server{
       }
       return mod;
     })();
-    const basePlugins = authModule?[require('inert'), authModule]:[require('inert')];
+    const basePlugins = authModule?[require('inert'), require('vision'), authModule]:[require('inert'), require('vision')];
     if(typeof(plugins)==='function'){
       callback = plugins;
       plugins = [];
