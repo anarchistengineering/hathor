@@ -118,6 +118,7 @@ class Server{
     }
     const registerPlugin = (info, plugin)=>{
       info.plugins.push(plugin.plugin?Object.assign({register: (plugin.plugin && plugin.plugin.register?plugin.plugin.register:plugin.plugin)}, exclude(plugin, 'plugin', 'postRegister')):exclude(plugin, 'postRegister'));
+      //info.plugins.push(exclude(plugin, 'postRegister'));
       if(plugin.postRegister){
         info.postRegistration.push(plugin.postRegister);
       }
@@ -125,19 +126,20 @@ class Server{
     };
     const pluginDetails = [...basePlugins, ...this.plugins, ...plugins].reduce((info, cfg)=>{
       const lib = (typeof(cfg)==='function')?cfg(this.hapi, this.config):cfg;
-      if(lib.plugin){
-        registerPlugin(info, lib.plugin);
-      }
-      if(lib.plugins){
-        lib.plugins.forEach((plugin)=>registerPlugin(info, plugin));
-      }
       if(lib.routes){
         const newRoutes = typeof(lib.routes)==='function'?lib.routes(this.hapi, this.config):lib.routes;
         info.routes = info.routes.concat(Array.isArray(newRoutes)?newRoutes:[newRoutes]);
       }
-      if(!lib.plugins && !lib.plugin && !lib.routes){
-        info.plugins.push(lib);
+      if(lib.plugin){
+        if(lib.postRegister){
+          info.postRegistration.push(lib.postRegister);
+        }
+        return registerPlugin(info, lib.plugin);
       }
+      if(lib.plugins){
+        return lib.plugins.reduce((info, plugin)=>registerPlugin(info, plugin), info);
+      }
+      info.plugins.push(lib);
       return info;
     }, {plugins: [], routes: [], postRegistration: []});
     this.pluginRoutes = pluginDetails.routes.filter((r)=>!!r);
