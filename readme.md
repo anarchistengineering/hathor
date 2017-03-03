@@ -1,4 +1,4 @@
- Server
+Server
 ===
 
 Hathor is a wrapper over the top of Hapi.  The goal is to remove boilerplate code from Hapi projects and introduce an easy and (hopefully) seamless upgrade path between Hapi versions.
@@ -64,7 +64,7 @@ npm install --save hathor hathor-file-config hathor-logger hathor-basic-auth
 ```js
 const {Server} = require('hathor');
 const Config = require('hathor-config');
-const FileConfig = require('hathor-config');
+const FileConfig = require('hathor-file-config');
 const logger = require('hathor-logger');
 
 const config = new Config();
@@ -73,10 +73,13 @@ config.set('server.logger', logger);
 
 const serverConfig = config.get('server', {});
 const server = new Server(serverConfig);
+server.plugins.push(require('hathor-swagger'));
 
 server.start((err)=>{
-  logger.error(err);
-  process.exit(1);
+  if(err){
+    logger.error(err);
+    process.exit(1);
+  }
 });
 ```
 
@@ -110,6 +113,17 @@ const key = (()=>{
 
 module.exports = {
   server: {
+    swagger: {
+      ui: {
+        title: 'Test application API'
+      },
+      swagger: {
+        info: {
+          title: 'API Documentation'
+        }
+      }
+    },
+
     //static: true, // serve static content
     //webroot: 'ui/build', // Set the webroot for static content
     connection: { // Listen on localhost:9001
@@ -134,6 +148,37 @@ module.exports = {
         }
       ]
     }
+  }
+};
+```
+
+### routes/hello/index.js
+
+```javascript
+const Joi = require('joi');
+
+module.exports = {
+  method: 'GET',
+  path: '/api/hello',
+  auth: true,
+  config: {
+    description: 'Basic hello route.',
+    notes: 'Returns a greeting based on to passed in.',
+    tags: ['api'],
+    validate: {
+      query: {
+        to: Joi.string().optional().description('Who to greet')
+      }
+    },
+    response: {
+      status: {
+        200: Joi.string()
+      }
+    }
+  },
+  handler(req, reply){
+    const to = req.query.to || 'World';
+    return reply(`Hello ${to}!`);
   }
 };
 ```
@@ -189,3 +234,4 @@ Core Plugins
   * [Basic Auth](https://github.com/anarchistengineering/hathor-basic-auth) - Provides Basic Authentication to a Hathor application.
   * [Cookie Auth](https://github.com/anarchistengineering/hathor-cookie-auth) - Provides Cookie Authentication to a Hathor application.
   * [JWT Auth](https://github.com/anarchistengineering/hathor-jwt-auth) - Provides JSON Web Token Authentication to a Hathor application.
+  * [Swagger Documentation](https://github.com/anarchistengineering/hathor-swagger) - Provides Swagger documentation for properly decorated routes.
