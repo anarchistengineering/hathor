@@ -182,6 +182,11 @@ class Server{
         routes: {
           files: {
             relativeTo: this.webRoot
+          },
+          validate: {
+            options: {
+              allowUnknown: true
+            }
           }
         }
       }
