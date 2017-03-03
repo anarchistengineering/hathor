@@ -185,6 +185,7 @@ class Server{
       }
       this.logger.info(`Serving static content from:`, `${this.webRoot}`);
       this.logger.info(`Server running at:`, `${this.hapi.info.uri}`);
+      return callback(null, this);
     });
   }
 };
