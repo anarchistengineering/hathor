@@ -54,11 +54,20 @@ class Server{
     return mappedRoutes;
   }
 
-  registerRoutes(routes = [], callback = noop){
-    if(typeof(routes)==='function'){
-      callback = routes;
-      routes = [];
+  registerRoutes(passedRoutes = [], callback = noop){
+    if(typeof(passedRoutes)==='function' && !callback){
+      callback = passedRoutes;
+      passedRoutes = [];
     }
+
+    const routes = (()=>{
+      if(typeof(passedRoutes)==='function'){
+        const routeDefs = passedRoutes(this);
+        return Array.isArray(routeDefs)?routeDefs:(routeDefs?[routeDefs]:[]);
+      }
+      return Array.isArray(passedRoutes)?passedRoutes:(passedRoutes?[passedRoutes]:[]);
+    })();
+
     const staticPages = this.config.get('static', true)===true?[
       {
         method: 'GET',
@@ -73,29 +82,42 @@ class Server{
         }
       }
     ]:[];
-    const appRoutes = (()=>{
-      try{
-        return require(path.join(this.routesPath, 'index.js'));
-      }catch(e){
-        const routeFiles = glob.sync(path.join(this.routesPath, '*/index.js'));
-        return routeFiles.map((routeFile)=>{
-          try{
-            return require(routeFile);
-          }catch(e){
-            this.logger.error(`Error loading route:`, `${routeFile}`, e);
-            return false;
-          }
-        }).filter((r)=>!!r);
-      }
-    })();
 
-    const allRoutes = this.appendAuth([...staticPages, ...this.routes, ...routes, ...appRoutes, ...this.pluginRoutes]);
-    allRoutes.forEach((route)=>{
-      const isSecure = this.useAuth && !!getObjectValue(['config', 'auth'], route, false);
-      this.logger.info(`Registering${isSecure?' authenticated':''} ${route.method}:`, `${route.path}`);
-    });
-    this.hapi.route(allRoutes);
-    callback(null, allRoutes);
+    const loadAllRoutes = (errors, appRoutes)=>{
+      const allRoutes = this.appendAuth([...staticPages, ...this.routes, ...routes, ...appRoutes, ...this.pluginRoutes]);
+      allRoutes.forEach((route)=>{
+        const isSecure = this.useAuth && !!getObjectValue(['config', 'auth'], route, false);
+        this.logger.info(`Registering${isSecure?' authenticated':''} ${route.method}:`, `${route.path}`);
+      });
+      this.hapi.route(allRoutes);
+      callback(null, allRoutes);
+    };
+
+    try{
+      return loadAllRoutes(null, require(path.join(this.routesPath, 'index.js')));
+    }catch(e){
+      const routeFiles = glob.sync(path.join(this.routesPath, '*/index.js'));
+      return async.mapSeries(routeFiles, (routeFile, next)=>{
+        const doNext=(err, details)=>{
+          if(err){
+            this.logger.error(`Error loading route:`, `${routeFile}`, err);
+            return next(err);
+          }
+          return next(null, details);
+        };
+        try{
+          const routeDef = require(routeFile);
+          if(typeof(routeDef)==='function'){
+            return routeDef(this, doNext);
+          }
+          return doNext(null, routeDef);
+        }catch(e){
+          doNext(e);
+        }
+      }, (errors, routes)=>{
+        return loadAllRoutes(errors, routes.filter((r)=>!!r));
+      });
+    }
   }
 
   registerPlugins(plugins = [], callback = noop){
@@ -168,7 +190,7 @@ class Server{
     this.hapi.connection(this.connection);
 
     this.registerPlugins(()=>{
-      this.registerRoutes(callback);
+      this.registerRoutes([], callback);
     });
   }
 
