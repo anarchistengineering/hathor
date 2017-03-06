@@ -1,6 +1,6 @@
 {
   "name": "hathor",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Hathor is a wrapper over the top of Hapi that includes all the boilerplate code and features out of the box.",
   "main": "index.js",
   "scripts": {
