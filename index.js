@@ -83,8 +83,15 @@ class Server{
       }
     ]:[];
 
+    const flatten = (a = [], i)=>{
+      if(Array.isArray(i)){
+        return a.concat(...i);
+      }
+      return a.concat(i);
+    };
+
     const loadAllRoutes = (errors, appRoutes)=>{
-      const allRoutes = this.appendAuth([...staticPages, ...this.routes, ...routes, ...appRoutes, ...this.pluginRoutes]);
+      const allRoutes = this.appendAuth([...staticPages, ...this.routes, ...routes, ...appRoutes, ...this.pluginRoutes].reduce(flatten, []));
       allRoutes.forEach((route)=>{
         const isSecure = this.useAuth && !!getObjectValue(['config', 'auth'], route, false);
         this.logger.info(`Registering${isSecure?' authenticated':''} ${route.method}:`, `${route.path}`);
@@ -214,6 +221,10 @@ class Server{
       this.logger.info(`Server running at:`, `${this.hapi.info.uri}`);
       return callback(null, this);
     });
+  }
+
+  shutdown(callback = noop){
+    this.hapi.stop(callback);
   }
 };
 
