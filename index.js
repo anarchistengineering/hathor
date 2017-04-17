@@ -12,7 +12,7 @@ const Config = require('hathor-config');
 
 class Server{
   constructor(options = {}){
-    const cfg = options.toJS();
+    const cfg = options.toJS?options.toJS():options;
     this.config = options;
     this.useAuth = !!cfg.auth;
     this.auth = cfg.auth;
