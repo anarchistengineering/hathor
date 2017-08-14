@@ -9,19 +9,19 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "async": "^2.1.4",
-    "glob": "^7.1.1",
-    "hapi": "^16.1.0",
-    "hathor-config": "0.0.1",
-    "hathor-file-config": "0.0.1",
-    "hathor-utils": "0.0.1",
-    "inert": "^4.1.0",
+    "async": "^2.5.0",
+    "glob": "^7.1.2",
+    "hapi": "^16.5.2",
+    "hathor-config": "^0.0.3",
+    "hathor-file-config": "^0.0.6",
+    "hathor-utils": "^0.0.2",
+    "inert": "^4.2.1",
     "json-stringify-safe": "^5.0.1",
     "vision": "^4.1.1"
   },
   "devDependencies": {
-    "code": "^4.0.0",
-    "lab": "^11.2.2",
+    "code": "^4.1.0",
+    "lab": "^14.1.2",
     "nodemon": "^1.11.0"
   },
   "author": "Jeremy Darling <jeremy.darling@gmail.com>",
